@@ -7,8 +7,12 @@ import {
   useColorScheme,
 } from "react-native";
 import { Colors } from "../../constants/Colors";
+import { router } from "expo-router";
 
-const FoodCard = ({ title, price, onCardPress, onButtonPress }) => {
+const FoodCard = ({ title, price, onButtonPress }) => {
+  function onCardPress() {
+    router.navigate(`/(home)/details/food`);
+  }
   const colorScheme = useColorScheme();
   return (
     <TouchableOpacity
@@ -21,7 +25,7 @@ const FoodCard = ({ title, price, onCardPress, onButtonPress }) => {
     >
       <Image
         source={{
-          uri: "https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg",
+          uri: "https://images.pexels.com/photos/28528516/pexels-photo-28528516/free-photo-of-delicious-slices-of-pizza-on-vibrant-background.jpeg",
         }}
         className="w-full h-40 rounded-lg mb-3"
         resizeMode="cover"

@@ -18,41 +18,27 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   return (
     <SafeAreaView className="flex-1">
+      {/* <ScrollView> */}
       {userDetails ? (
         <View className="flex-1">
           <View className="relative">
             <Image
-              className="w-full h-32 opacity-75"
+              className="w-full h-20 opacity-60"
               source={{
-                uri: "https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg",
+                uri: "https://images.pexels.com/photos/1391487/pexels-photo-1391487.jpeg",
               }}
             />
-            <View className="absolute top-0 left-0 right-0 flex-row justify-between items-center p-4">
+            <View className="absolute top-3 left-0 right-0 flex-row justify-between items-center p-4">
               <View className="flex-1">
-                <Text className="text-lg flex-row items-center justify-start mt-6">
-                  <Text
-                    className="text-xl mr-2 ml-4 font-medium"
-                    style={{
-                      color: Colors[colorScheme].text,
-                    }}
-                  >
-                    Your Location
-                  </Text>
+                <View className="flex-row items-center ">
                   <Ionicons
-                    name="caret-down-outline"
+                    name="location"
                     size={20}
                     color={Colors[colorScheme].text}
-                  />
-                </Text>
-                <View className="flex-row items-center mt-2">
-                  <Ionicons
-                    name="location-outline"
-                    size={30}
-                    color={Colors[colorScheme].text}
-                    className="mr-2"
+                    className="mr-4"
                   />
                   <Text
-                    className=" text-2xl font-bold"
+                    className=" text-xl font-bold ml-1"
                     style={{
                       color: Colors[colorScheme].text,
                     }}
@@ -61,16 +47,16 @@ export default function HomeScreen() {
                   </Text>
                 </View>
               </View>
-              <View className="flex-row items-center mt-6">
+              <View className="flex-row items-center mt-">
                 <Ionicons
                   name="notifications-circle-outline"
-                  size={48}
+                  size={42}
                   color={Colors[colorScheme].text}
                   style={{ marginHorizontal: 8 }}
                 />
                 <Ionicons
                   name="chatbubble-ellipses-outline"
-                  size={42}
+                  size={38}
                   color={Colors[colorScheme].text}
                   style={{ marginHorizontal: 8 }}
                 />
@@ -133,6 +119,7 @@ export default function HomeScreen() {
       ) : (
         <ActivityIndicator size="large" color="#00ff00" />
       )}
+      {/* </ScrollView> */}
     </SafeAreaView>
   );
 }
