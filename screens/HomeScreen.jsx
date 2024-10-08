@@ -7,15 +7,31 @@ import {
   ScrollView,
   useColorScheme,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useUser } from "../context/UserContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FoodCard from "../components/ui/card";
 import { Colors } from "../constants/Colors";
-
+import useLocation from "../hooks/useLocation";
+import { getAllFoods } from "../lib/appwriteService";
+import { databases } from "@/lib/appwrite";
 export default function HomeScreen() {
+  const { longitude, latitude, address, errorMessage } = useLocation();
+  const [foods, setFoods] = React.useState([]);
   const { userDetails, logout } = useUser();
   const colorScheme = useColorScheme();
+  useEffect(() => {
+    const fetchFoods = async () => {
+      try {
+        let res = await getAllFoods();
+        setFoods(res);
+      } catch (error) {
+        console.error("Error fetching foods:", error);
+      }
+    };
+
+    fetchFoods(); // Call the inner function
+  }, []);
   return (
     <SafeAreaView className="flex-1">
       {/* <ScrollView> */}
@@ -23,7 +39,7 @@ export default function HomeScreen() {
         <View className="flex-1">
           <View className="relative">
             <Image
-              className="w-full h-20 opacity-60"
+              className="w-full h-20 opacity-80"
               source={{
                 uri: "https://images.pexels.com/photos/1391487/pexels-photo-1391487.jpeg",
               }}
@@ -65,54 +81,17 @@ export default function HomeScreen() {
           </View>
           <ScrollView>
             <View className="flex flex-wrap flex-row justify-between mt-4">
-              <View className="basis-1/2 p-1">
-                <FoodCard
-                  title="Delicious Pizza"
-                  content="A tasty pizza topped with mozzarella, pepperoni, and fresh herbs."
-                  price="Free"
-                  rating="4.5"
-                />
-              </View>
-              <View className="basis-1/2 p-1">
-                <FoodCard
-                  title="Classic Burger"
-                  content="A juicy burger with fresh lettuce, tomatoes, and cheddar cheese."
-                  price="Free"
-                  rating="4.7"
-                />
-              </View>
-              <View className="basis-1/2 p-1">
-                <FoodCard
-                  title="Cheesy Pasta"
-                  content="Creamy pasta with a mix of cheddar, mozzarella, and parmesan."
-                  price="Free"
-                  rating="4.6"
-                />
-              </View>
-              <View className="basis-1/2 p-1">
-                <FoodCard
-                  title="Spicy Tacos"
-                  content="Crispy tacos filled with seasoned beef, fresh salsa, and cheese."
-                  price="Free"
-                  rating="4.3"
-                />
-              </View>
-              <View className="basis-1/2 p-1">
-                <FoodCard
-                  title="Spicy Tacos"
-                  content="Crispy tacos filled with seasoned beef, fresh salsa, and cheese."
-                  price="Free"
-                  rating="4.3"
-                />
-              </View>
-              <View className="basis-1/2 p-1">
-                <FoodCard
-                  title="Spicy Tacos"
-                  content="Crispy tacos filled with seasoned beef, fresh salsa, and cheese."
-                  price="Free"
-                  rating="4.3"
-                />
-              </View>
+              {foods.map((food, index) => (
+                <View key={index} className="basis-1/2 p-1">
+                  <FoodCard
+                    title={food.name}
+                    content={food.description}
+                    price={food.price}
+                    id={food.$id}
+                    image={food.foodImage}
+                  />
+                </View>
+              ))}
             </View>
           </ScrollView>
         </View>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import {
   View,
   Text,
@@ -6,32 +6,73 @@ import {
   TouchableOpacity,
   useColorScheme,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { Colors } from "../constants/Colors";
 import MapView, { Marker } from "react-native-maps";
-
-const SingleFoodView = () => {
+import { useNavigation } from "expo-router";
+import { getFoodWithRequests, getUser } from "@/lib/appwriteService";
+import haversineDistance from "../lib/lib";
+import useLocation from "@/hooks/useLocation";
+const SingleFoodView = ({ id }) => {
   const colorScheme = useColorScheme();
+  const [food, setFood] = React.useState(null);
+  const { longitude, latitude } = useLocation();
 
-  const food = {
-    title: "Delicious Pizza",
-    price: "Free",
-    description:
-      "A mouth-watering pizza loaded with cheese, pepperoni, and fresh vegetables.",
-    imageUrl:
-      "https://images.pexels.com/photos/28528516/pexels-photo-28528516/free-photo-of-delicious-slices-of-pizza-on-vibrant-background.jpeg",
-    ownerName: "John Doe",
-    ownerImage: "https://randomuser.me/api/portraits/men/32.jpg",
-    ownerLocation: {
-      latitude: 37.7749,
-      longitude: -122.4194,
-    },
-    distance: "2.5 km",
-    contact: "+1 234 567 890",
-    quantity: "2 large pizzas",
-    expirationDate: "Oct 10, 2024",
-    pickupTime: "10 AM - 6 PM",
-  };
+  useEffect(() => {
+    const fetchFood = async () => {
+      try {
+        const res = await getFoodWithRequests(id);
+        const userDet = await getUser(res.userId);
+
+        const foodLatitude = parseFloat(res.latitude);
+        const foodLongitude = parseFloat(res.longitude);
+
+        if (
+          !isNaN(foodLatitude) &&
+          !isNaN(foodLongitude) &&
+          latitude &&
+          longitude
+        ) {
+          const distance = haversineDistance(
+            foodLatitude,
+            foodLongitude,
+            latitude,
+            longitude
+          );
+
+          setFood({
+            title: res.name,
+            price: res.price,
+            description: res.description,
+            imageUrl: res.foodImage,
+            ownerName: userDet.name,
+            ownerImage: userDet.prefs?.profilePicture,
+            ownerLocation: {
+              latitude: foodLatitude,
+              longitude: foodLongitude,
+            },
+            distance: distance,
+            contact: res.phone,
+            quantity: res.quantity,
+            expirationDate: res.expiry,
+            pickupTime: res.pickup,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching food:", error);
+      }
+    };
+
+    fetchFood();
+  }, [id, latitude, longitude]); // Add latitude and longitude as dependencies
+  if (!food) {
+    return (
+      <View className="flex-1 justify-center items-center mt-[100%]">
+        <ActivityIndicator size="large" color={Colors[colorScheme].text} />
+      </View>
+    );
+  }
 
   function handleRequest() {
     console.log("Request button pressed");
@@ -46,10 +87,7 @@ const SingleFoodView = () => {
   }
 
   return (
-    <ScrollView
-      className="p-3"
-      style={{ backgroundColor: Colors[colorScheme].background }}
-    >
+    <ScrollView className="p-3">
       {/* Food Image */}
       <Image
         source={{ uri: food.imageUrl }}
@@ -69,12 +107,6 @@ const SingleFoodView = () => {
             style={{ color: Colors[colorScheme].text }}
           >
             By {food.ownerName}
-          </Text>
-          <Text
-            className="text-xs opacity-60"
-            style={{ color: Colors[colorScheme].text }}
-          >
-            Web Developer
           </Text>
         </View>
         <TouchableOpacity
@@ -117,7 +149,7 @@ const SingleFoodView = () => {
           {food.pickupTime}
         </Text>
         <Text style={{ color: Colors[colorScheme].text }}>
-          <Text className="font-semibold">Contact: </Text>
+          {food.contact && <Text className="font-semibold">Contact: </Text>}
           {food.contact}
         </Text>
       </View>

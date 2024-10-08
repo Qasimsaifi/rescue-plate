@@ -1,17 +1,18 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import SingleFoodView from "../../../screens/SingleFoodView";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 
 const SingleFoodPage = () => {
   const { id } = useLocalSearchParams();
+  // console.log("from page ", id);
   return (
     <View
       style={{
         paddingVertical: 30,
       }}
     >
-      <SingleFoodView id />
+      <SingleFoodView id={id} />
     </View>
   );
 };

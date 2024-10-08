@@ -12,38 +12,73 @@ export function useUser() {
 
 export function UserProvider(props) {
   const [user, setUser] = useState(null);
-  const [userDetails, setUserDetails] = useState(null); // For additional user details
-  const [isLoaded, setIsLoaded] = useState(false); // Track if the user check is complete
+  const [userDetails, setUserDetails] = useState(null);
+  const [userPrefs, setUserPrefs] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   async function login(email, password) {
     const loggedIn = await account.createEmailPasswordSession(email, password);
     setUser(loggedIn);
     await fetchUserDetails();
-    // toast("Welcome back. You are logged in");
-    router.replace("(tabs)/"); // Redirect to Home or any other screen after login
+    await fetchUserPrefs();
+    router.replace("(tabs)/");
   }
 
   async function logout() {
     await account.deleteSession("current");
     setUser(null);
     setUserDetails(null);
+    setUserPrefs(null);
     toast("Logged out");
-    router.replace("/auth/login"); // Redirect to Login after logout
+    router.replace("/auth/login");
   }
 
   async function register(email, password, name) {
     await account.create(ID.unique(), email, password, name);
     await login(email, password);
     toast("Account created");
-    router.replace("(tabs)/"); // Redirect to Home after registration
+    router.replace("(tabs)/");
   }
 
   async function fetchUserDetails() {
     try {
-      const userDetails = await account.get();
-      setUserDetails(userDetails);
+      const details = await account.get();
+      setUserDetails(details);
     } catch (err) {
       setUserDetails(null);
+    }
+  }
+
+  async function fetchUserPrefs() {
+    try {
+      const prefs = await account.getPrefs();
+      setUserPrefs(prefs);
+      console.log(prefs);
+    } catch (err) {
+      setUserPrefs(null);
+    }
+  }
+
+  async function updateUser(updates) {
+    try {
+      const updatedUser = await account.updateName(updates.name);
+      setUserDetails(updatedUser);
+
+      toast("User details updated");
+    } catch (err) {
+      toast("Failed to update user details");
+    }
+  }
+
+  async function updatePrefs(newPrefs) {
+    try {
+      // Merge new preferences with existing ones
+      // const updatedPrefs = { newPrefs };
+      const result = await account.updatePrefs(newPrefs);
+      setUserPrefs(result);
+      toast("Preferences updated");
+    } catch (err) {
+      toast("Failed to update preferences");
     }
   }
 
@@ -52,13 +87,14 @@ export function UserProvider(props) {
       const loggedIn = await account.get();
       setUser(loggedIn);
       await fetchUserDetails();
-      // toast("Welcome back. You are logged in");
-      router.replace("(tabs)/"); // Optionally redirect if user is already logged in
+      await fetchUserPrefs();
+      router.replace("(tabs)/");
     } catch (err) {
       setUser(null);
       setUserDetails(null);
+      setUserPrefs(null);
     } finally {
-      setIsLoaded(true); // Set isLoaded to true when the check is complete
+      setIsLoaded(true);
     }
   }
 
@@ -71,10 +107,13 @@ export function UserProvider(props) {
       value={{
         current: user,
         userDetails,
-        isLoaded, // Expose the isLoaded state
+        userPrefs,
+        isLoaded,
         login,
         logout,
         register,
+        updateUser,
+        updatePrefs,
         toast,
       }}
     >
