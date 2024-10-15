@@ -15,6 +15,7 @@ import { Colors } from "../constants/Colors";
 import useLocation from "../hooks/useLocation";
 import { getAllFoods } from "../lib/appwriteService";
 import { databases } from "@/lib/appwrite";
+import { Link, router } from "expo-router";
 export default function HomeScreen() {
   const { longitude, latitude, address, errorMessage } = useLocation();
   const [foods, setFoods] = React.useState([]);
@@ -30,11 +31,10 @@ export default function HomeScreen() {
       }
     };
 
-    fetchFoods(); // Call the inner function
+    fetchFoods();
   }, []);
   return (
     <SafeAreaView className="flex-1">
-      {/* <ScrollView> */}
       {userDetails ? (
         <View className="flex-1">
           <View className="relative">
@@ -59,7 +59,7 @@ export default function HomeScreen() {
                       color: Colors[colorScheme].text,
                     }}
                   >
-                    New York City
+                    {address[0]?.city}
                   </Text>
                 </View>
               </View>
@@ -80,7 +80,10 @@ export default function HomeScreen() {
             </View>
           </View>
           <ScrollView>
-            <View className="flex flex-wrap flex-row justify-between mt-4">
+            <Text className="text-center text-2xl font-bold">
+              Available Food
+            </Text>
+            <View className="flex flex-wrap flex-row justify-between my-4">
               {foods.map((food, index) => (
                 <View key={index} className="basis-1/2 p-1">
                   <FoodCard
@@ -98,7 +101,6 @@ export default function HomeScreen() {
       ) : (
         <ActivityIndicator size="large" color="#00ff00" />
       )}
-      {/* </ScrollView> */}
     </SafeAreaView>
   );
 }

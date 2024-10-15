@@ -17,6 +17,7 @@ import {
   LogOut,
   Edit,
 } from "lucide-react-native";
+import { router } from "expo-router";
 
 const defUserImage = require("../assets/images/def-user.png");
 export default function ProfileScreen() {
@@ -29,6 +30,7 @@ export default function ProfileScreen() {
         "https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?q=80&w=1587",
     });
   };
+
   console.log(userDetails);
   const textColor = { color: Colors[colorScheme].text };
   const primaryColor = Colors[colorScheme].primary;
@@ -50,6 +52,7 @@ export default function ProfileScreen() {
         <Text style={textColor} className="text-2xl font-bold mt-4">
           {userDetails.name}
         </Text>
+        <Text></Text>
       </View>
 
       <View className="flex-row justify-around py-6 ">
@@ -79,19 +82,17 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      <View className="px-6 py-8">
-        <TouchableOpacity className="flex-row items-center mb-6">
+      <View className="px-8 py-14">
+        <TouchableOpacity
+          className="flex-row items-center mb-6"
+          onPress={() => router.push("/screens")}
+        >
           <Package color={primaryColor} size={24} />
           <Text style={textColor} className="text-lg ml-4">
             My Donations
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity className="flex-row items-center mb-6">
-          <TreeDeciduous color={primaryColor} size={24} />
-          <Text style={textColor} className="text-lg ml-4">
-            Impact Dashboard
-          </Text>
-        </TouchableOpacity>
+
         <TouchableOpacity
           className="flex-row items-center mb-6"
           onPress={handlePrefs}

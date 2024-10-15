@@ -88,7 +88,7 @@ export function UserProvider(props) {
       setUser(loggedIn);
       await fetchUserDetails();
       await fetchUserPrefs();
-      router.replace("(tabs)/");
+      // router.replace("(tabs)/");
     } catch (err) {
       setUser(null);
       setUserDetails(null);

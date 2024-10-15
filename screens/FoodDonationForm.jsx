@@ -465,7 +465,7 @@ const FoodDonationForm = () => {
         Select Expiration Date:
       </Text>
       {renderButton(`Expiry : ${expirationDate.toLocaleDateString()}`, () =>
-        setShowDatePicker(true)
+        setShowDatePicker(true),
       )}
       {showDatePicker && (
         <DateTimePicker
@@ -485,7 +485,7 @@ const FoodDonationForm = () => {
         Select Pickup Time:
       </Text>
       {renderButton(`Pickup Time : ${pickupTime.toLocaleTimeString()}`, () =>
-        setShowTimePicker(true)
+        setShowTimePicker(true),
       )}
       {showTimePicker && (
         <DateTimePicker

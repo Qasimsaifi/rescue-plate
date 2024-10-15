@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,12 +11,25 @@ import {
 import { Colors } from "../constants/Colors";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "expo-router";
-import { getFoodWithRequests, getUser } from "@/lib/appwriteService";
+import FollowButton from "@/components/FollowButton";
+import {
+  createRequest,
+  getFoodWithRequests,
+  getUser,
+  toggleFollow,
+  checkRequestStatus,
+  acceptRequest,
+  rejectRequest,
+} from "@/lib/appwriteService";
 import haversineDistance from "../lib/lib";
 import useLocation from "@/hooks/useLocation";
+import { useUser } from "@/context/UserContext";
+import RequestButton from "@/components/RequestButton";
 const SingleFoodView = ({ id }) => {
+  const { userDetails } = useUser();
   const colorScheme = useColorScheme();
-  const [food, setFood] = React.useState(null);
+  const [food, setFood] = useState(null);
+  const [requestStatus, setRequestStatus] = useState(null);
   const { longitude, latitude } = useLocation();
 
   useEffect(() => {
@@ -24,7 +37,8 @@ const SingleFoodView = ({ id }) => {
       try {
         const res = await getFoodWithRequests(id);
         const userDet = await getUser(res.userId);
-
+        const status = await checkRequestStatus(userDetails.$id, id);
+        setRequestStatus(status);
         const foodLatitude = parseFloat(res.latitude);
         const foodLongitude = parseFloat(res.longitude);
 
@@ -38,13 +52,15 @@ const SingleFoodView = ({ id }) => {
             foodLatitude,
             foodLongitude,
             latitude,
-            longitude
+            longitude,
           );
 
           setFood({
             title: res.name,
+            $id: res.$id,
             price: res.price,
             description: res.description,
+            userId: res.userId,
             imageUrl: res.foodImage,
             ownerName: userDet.name,
             ownerImage: userDet.prefs?.profilePicture,
@@ -65,7 +81,7 @@ const SingleFoodView = ({ id }) => {
     };
 
     fetchFood();
-  }, [id, latitude, longitude]); // Add latitude and longitude as dependencies
+  }, [id, latitude, longitude]);
   if (!food) {
     return (
       <View className="flex-1 justify-center items-center mt-[100%]">
@@ -74,18 +90,38 @@ const SingleFoodView = ({ id }) => {
     );
   }
 
-  function handleRequest() {
-    console.log("Request button pressed");
-  }
+  const formatDateTime = (isoString) => {
+    const date = new Date(isoString);
+
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const timeFormatted = `${hours}:${minutes}`;
+
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    const dateFormatted = `${day}/${month}/${year}`;
+
+    return { timeFormatted, dateFormatted };
+  };
 
   function handleMessage() {
     console.log("Message button pressed");
+    console.log(food.pickupTime);
   }
 
-  function handleFollow() {
-    console.log("Follow button pressed");
+  async function handleFollow() {
+    // console.log("Follow button pressed");
+    await toggleFollow(userDetails.$id, food.userId);
   }
-
+  const {
+    timeFormatted: pickupTimeFormatted,
+    dateFormatted: pickupDateFormatted,
+  } = formatDateTime(food.pickupTime);
+  const {
+    timeFormatted: expirationTimeFormatted,
+    dateFormatted: expirationDateFormatted,
+  } = formatDateTime(food.expirationDate);
   return (
     <ScrollView className="p-3">
       {/* Food Image */}
@@ -106,21 +142,11 @@ const SingleFoodView = ({ id }) => {
             className="text-base"
             style={{ color: Colors[colorScheme].text }}
           >
-            By {food.ownerName}
+            {food.ownerName}
           </Text>
         </View>
-        <TouchableOpacity
-          onPress={handleFollow}
-          className="py-2 px-4 rounded-lg"
-          style={{ backgroundColor: Colors[colorScheme].primary }}
-        >
-          <Text
-            className="font-semibold"
-            style={{ color: Colors[colorScheme].buttonText }}
-          >
-            Follow
-          </Text>
-        </TouchableOpacity>
+
+        <FollowButton followerId={userDetails.$id} followedId={food.userId} />
       </View>
 
       {/* Food Title and Price */}
@@ -142,11 +168,11 @@ const SingleFoodView = ({ id }) => {
         </Text>
         <Text className="mb-1" style={{ color: Colors[colorScheme].text }}>
           <Text className="font-semibold">Expires on: </Text>
-          {food.expirationDate}
+          {expirationDateFormatted}
         </Text>
         <Text className="mb-1" style={{ color: Colors[colorScheme].text }}>
           <Text className="font-semibold">Pickup Time: </Text>
-          {food.pickupTime}
+          {pickupDateFormatted} at {pickupTimeFormatted}
         </Text>
         <Text style={{ color: Colors[colorScheme].text }}>
           {food.contact && <Text className="font-semibold">Contact: </Text>}
@@ -155,19 +181,11 @@ const SingleFoodView = ({ id }) => {
       </View>
 
       {/* Request and Message Buttons */}
+      <Text className="py-2" style={{ color: Colors[colorScheme].text }}>
+        {requestStatus && `Request Status: ${requestStatus.status}`}
+      </Text>
       <View className="flex-row justify-between mb-8">
-        <TouchableOpacity
-          onPress={handleRequest}
-          className="py-3 px-4 rounded-lg flex-1 mr-2"
-          style={{ backgroundColor: Colors[colorScheme].primary }}
-        >
-          <Text
-            className="font-semibold text-center"
-            style={{ color: Colors[colorScheme].buttonText }}
-          >
-            Request
-          </Text>
-        </TouchableOpacity>
+        <RequestButton userId={userDetails.$id} foodId={food.$id} />
 
         <TouchableOpacity
           onPress={handleMessage}
@@ -176,7 +194,7 @@ const SingleFoodView = ({ id }) => {
         >
           <Text
             className="font-semibold text-center"
-            style={{ color: Colors[colorScheme].buttonText }}
+            style={{ color: Colors[colorScheme].text }}
           >
             Message
           </Text>
