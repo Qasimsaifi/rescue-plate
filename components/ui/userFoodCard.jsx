@@ -9,7 +9,7 @@ import {
 import { Colors } from "../../constants/Colors";
 import { router, useNavigation } from "expo-router";
 
-const UserFoodCard = ({ title, date, image, id }) => {
+const UserFoodCard = ({ title, date, image, id, onDelete }) => {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
   return (
@@ -41,6 +41,7 @@ const UserFoodCard = ({ title, date, image, id }) => {
             {new Date(date).toLocaleDateString()}
           </Text>
           <TouchableOpacity
+            onPress={onDelete}
             activeOpacity={0.7}
             className="px-4 rounded-lg py-1 mt-2"
             style={{

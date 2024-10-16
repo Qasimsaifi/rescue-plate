@@ -4,8 +4,9 @@ import {
   ActivityIndicator,
   useColorScheme,
   ScrollView,
+  Alert,
 } from "react-native";
-import { getFoodsByUserId } from "../lib/appwriteService";
+import { getFoodsByUserId, deleteFood } from "../lib/appwriteService";
 import { useUser } from "../context/UserContext";
 import UserFoodCard from "../components/ui/userFoodCard";
 import { Colors } from "../constants/Colors";
@@ -31,6 +32,34 @@ const YourDonations = () => {
     fetchDonations();
   }, [userDetails.$id]);
 
+  const handleDeleteFood = async (foodId) => {
+    Alert.alert(
+      "Delete Food",
+      "Are you sure you want to delete this food donation?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteFood(foodId);
+              const updatedDonations = donations.filter(
+                (food) => food.$id !== foodId,
+              );
+              setDonations(updatedDonations);
+            } catch (error) {
+              console.error("Error deleting food:", error);
+            }
+          },
+        },
+      ],
+    );
+  };
+
   return (
     <View className="flex items-center justify-center h-full">
       {isLoading ? (
@@ -47,6 +76,7 @@ const YourDonations = () => {
                     date={food.$createdAt}
                     id={food.$id}
                     image={food.foodImage}
+                    onDelete={() => handleDeleteFood(food.$id)}
                   />
                 </View>
               ))}

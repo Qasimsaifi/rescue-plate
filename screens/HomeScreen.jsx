@@ -13,8 +13,10 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FoodCard from "../components/ui/card";
 import { Colors } from "../constants/Colors";
 import useLocation from "../hooks/useLocation";
+import { MapPin, MessageCircle, Settings } from "lucide-react-native";
 import { getAllFoods } from "../lib/appwriteService";
 import { databases } from "@/lib/appwrite";
+const defUserImage = require("../assets/images/homecover.jpg");
 import { Link, router } from "expo-router";
 export default function HomeScreen() {
   const { longitude, latitude, address, errorMessage } = useLocation();
@@ -24,7 +26,7 @@ export default function HomeScreen() {
   useEffect(() => {
     const fetchFoods = async () => {
       try {
-        let res = await getAllFoods();
+        let res = await getAllFoods(userDetails.$id);
         setFoods(res);
       } catch (error) {
         console.error("Error fetching foods:", error);
@@ -39,22 +41,20 @@ export default function HomeScreen() {
         <View className="flex-1">
           <View className="relative">
             <Image
-              className="w-full h-20 opacity-80"
-              source={{
-                uri: "https://images.pexels.com/photos/1391487/pexels-photo-1391487.jpeg",
-              }}
+              className="w-full opacity-60"
+              style={{ height: 70 }}
+              source={defUserImage}
             />
             <View className="absolute top-3 left-0 right-0 flex-row justify-between items-center p-4">
               <View className="flex-1">
                 <View className="flex-row items-center ">
-                  <Ionicons
-                    name="location"
+                  <MapPin
                     size={20}
                     color={Colors[colorScheme].text}
-                    className="mr-4"
+                    className="mr-1"
                   />
                   <Text
-                    className=" text-xl font-bold ml-1"
+                    className=" text-xl font-medium"
                     style={{
                       color: Colors[colorScheme].text,
                     }}
@@ -64,15 +64,9 @@ export default function HomeScreen() {
                 </View>
               </View>
               <View className="flex-row items-center mt-">
-                <Ionicons
-                  name="notifications-circle-outline"
-                  size={42}
-                  color={Colors[colorScheme].text}
-                  style={{ marginHorizontal: 8 }}
-                />
-                <Ionicons
+                <MessageCircle
                   name="chatbubble-ellipses-outline"
-                  size={38}
+                  size={32}
                   color={Colors[colorScheme].text}
                   style={{ marginHorizontal: 8 }}
                 />
@@ -80,7 +74,10 @@ export default function HomeScreen() {
             </View>
           </View>
           <ScrollView>
-            <Text className="text-center text-2xl font-bold">
+            <Text
+              className="text-center text-2xl font-bold mt-4"
+              style={{ color: Colors[colorScheme].text }}
+            >
               Available Food
             </Text>
             <View className="flex flex-wrap flex-row justify-between my-4">
@@ -99,7 +96,7 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
       ) : (
-        <ActivityIndicator size="large" color="#00ff00" />
+        <ActivityIndicator size="large" color="red" />
       )}
     </SafeAreaView>
   );

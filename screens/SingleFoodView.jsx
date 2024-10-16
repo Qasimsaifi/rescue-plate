@@ -54,7 +54,6 @@ const SingleFoodView = ({ id }) => {
             latitude,
             longitude,
           );
-
           setFood({
             title: res.name,
             $id: res.$id,
@@ -62,8 +61,6 @@ const SingleFoodView = ({ id }) => {
             description: res.description,
             userId: res.userId,
             imageUrl: res.foodImage,
-            ownerName: userDet.name,
-            ownerImage: userDet.prefs?.profilePicture,
             ownerLocation: {
               latitude: foodLatitude,
               longitude: foodLongitude,
@@ -130,24 +127,6 @@ const SingleFoodView = ({ id }) => {
         className="w-full h-[250px] rounded-lg mb-[18px]"
         resizeMode="cover"
       />
-
-      {/* Owner Profile and Follow Button */}
-      <View className="flex-row items-center mb-4">
-        <Image
-          source={{ uri: food.ownerImage }}
-          className="w-[50px] h-[50px] rounded-full mr-3"
-        />
-        <View className="flex-1">
-          <Text
-            className="text-base"
-            style={{ color: Colors[colorScheme].text }}
-          >
-            {food.ownerName}
-          </Text>
-        </View>
-
-        <FollowButton followerId={userDetails.$id} followedId={food.userId} />
-      </View>
 
       {/* Food Title and Price */}
       <View className="mb-2">

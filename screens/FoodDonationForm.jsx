@@ -19,7 +19,7 @@ import useLocation from "../hooks/useLocation";
 import { Colors } from "../constants/Colors";
 import { uploadFood } from "../lib/uploadFood";
 import { useUser } from "../context/UserContext";
-
+import { router } from "expo-router";
 const FoodDonationForm = () => {
   // State variables
   const { userDetails } = useUser();
@@ -34,6 +34,8 @@ const FoodDonationForm = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [initialRegion, setInitialRegion] = useState({
     latitude: 37.78825,
@@ -102,7 +104,7 @@ const FoodDonationForm = () => {
       Alert.alert("Error", "Please fill all required fields.");
       return;
     }
-
+    setIsSubmitting(true);
     try {
       const response = await uploadFood({
         name: foodName,
@@ -118,9 +120,21 @@ const FoodDonationForm = () => {
         pickedFile: foodImage,
         userId: userDetails?.$id,
       });
+
       console.log("Form submitted successfully!", response);
+      // Clear input fields
+      setFoodName("");
+      setPrice("Free");
+      setDescription("");
+      setQuantity("");
+      setFoodType("Fruits");
+      setAllergens("");
+      setFoodImage("");
+      router.push("/(home)/yourdonations");
     } catch (error) {
       console.error("Error submitting form", error);
+    } finally {
+      setIsSubmitting(false); // Stop loading
     }
   };
 
@@ -214,7 +228,7 @@ const FoodDonationForm = () => {
       disabled={isLoading}
     >
       {isLoading ? (
-        <ActivityIndicator color={Colors[colorScheme].primary} />
+        <ActivityIndicator color={Colors[colorScheme].text} />
       ) : (
         <Text
           style={{ color: Colors[colorScheme].text }}
@@ -495,7 +509,25 @@ const FoodDonationForm = () => {
           onChange={handleDateChange}
         />
       )}
-      {renderButton("Submit", handleSubmit)}
+      {renderButton("Submit", handleSubmit, isSubmitting)}
+
+      {/* <TouchableOpacity
+        className=" p-3 rounded-lg mb-4"
+        style={{ backgroundColor: Colors[colorScheme].primary }}
+        onPress={handleSubmit}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? (
+          <ActivityIndicator color={Colors[colorScheme].primary} />
+        ) : (
+          <Text
+            style={{ color: Colors[colorScheme].text }}
+            className="text-center"
+          >
+            Submit
+          </Text>
+        )}
+      </TouchableOpacity> */}
     </ScrollView>
   );
 };

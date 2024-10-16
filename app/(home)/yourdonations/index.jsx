@@ -1,12 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import YourDonations from "../../../screens/YourDonations";
 
-export default function search() {
-  return (
-    <View>
-      <Text>search</Text>
-    </View>
-  );
+export default function index() {
+  return <YourDonations />;
 }
 
 const styles = StyleSheet.create({});

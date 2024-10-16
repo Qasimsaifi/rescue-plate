@@ -18,6 +18,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const colorScheme = useColorScheme();
   const themeTextStyle =
     colorScheme === "light" ? styles.lightThemeText : styles.darkThemeText;
@@ -25,8 +26,10 @@ export default function LoginScreen() {
     setIsLoading(true);
     try {
       await user.login(email, password);
+      setErrorMessage(null);
     } catch (error) {
       console.error("Login failed", error);
+      setErrorMessage("Invalid credentials");
     } finally {
       setIsLoading(false);
     }
@@ -40,6 +43,11 @@ export default function LoginScreen() {
       <Text style={[styles.para, themeTextStyle]}>
         Please sign in to your account{" "}
       </Text>
+      {errorMessage && (
+        <Text style={[themeTextStyle, { color: "red", paddingVertical: 8 }]}>
+          {errorMessage}
+        </Text>
+      )}
       <Text style={[styles.label, themeTextStyle]}>Email Address</Text>
       <TextInput
         style={[styles.input, themeTextStyle]}
@@ -76,7 +84,7 @@ export default function LoginScreen() {
       </TouchableOpacity>
       <Text style={[styles.signup_text, themeTextStyle]}>
         Don't have an account?{" "}
-        <Link href="/register" style={styles.signup_link}>
+        <Link href="/auth/register" style={styles.signup_link}>
           Register
         </Link>
       </Text>
@@ -145,5 +153,9 @@ const styles = StyleSheet.create({
   signup_link: {
     color: "#FE8C00",
     fontWeight: "medium",
+  },
+  error_message: {
+    color: "red",
+    marginBottom: 10,
   },
 });

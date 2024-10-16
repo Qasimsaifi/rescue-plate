@@ -24,17 +24,22 @@ export default function RegisterScreen() {
   const [isChecked, setChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const handleRegister = async () => {
-    if (!name || !email || !password) {
-      toast(
-        "Incomplete Information",
-        "Please fill in all the required fields."
-      );
+    if (!name) {
+      toast("Full Name Error", "Please enter your full name.");
+      return;
+    }
+    if (!email) {
+      toast("Email Error", "Please enter your email address.");
+      return;
+    }
+    if (!password) {
+      toast("Password Error", "Please enter your password.");
       return;
     }
     if (!isChecked) {
       toast(
         "Terms and Conditions",
-        "You must agree to the terms and conditions to register."
+        "You must agree to the terms and conditions to register.",
       );
       return;
     }
@@ -42,7 +47,7 @@ export default function RegisterScreen() {
     try {
       await user.register(email, password, name);
     } catch (error) {
-      console.error("Login failed", error);
+      console.error("Registration failed", error);
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +62,7 @@ export default function RegisterScreen() {
       </Text>
       <Text style={[styles.label, themeTextStyle]}>Full Name</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, themeTextStyle]}
         placeholder="Enter your full name"
         value={name}
         onChangeText={setName}
@@ -65,7 +70,7 @@ export default function RegisterScreen() {
       />
       <Text style={[styles.label, themeTextStyle]}>Email Address</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, themeTextStyle]}
         placeholder="Enter your email address"
         value={email}
         onChangeText={setEmail}
@@ -74,7 +79,7 @@ export default function RegisterScreen() {
       <Text style={[styles.label, themeTextStyle]}>Password</Text>
       <TextInput
         textContentType="password"
-        style={styles.input}
+        style={[styles.input, themeTextStyle]}
         placeholder="Enter your password"
         value={password}
         placeholderTextColor={colorScheme === "light" ? "black" : "white"}
@@ -119,7 +124,7 @@ export default function RegisterScreen() {
       </TouchableOpacity>
       <Text style={[styles.signup_text, themeTextStyle]}>
         Allready have an account?{" "}
-        <Link href="/login" style={styles.link}>
+        <Link href="/auth/login" style={styles.link}>
           Login
         </Link>
       </Text>
