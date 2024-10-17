@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import EditProfile from "../../../screens/EditProfile";
 import { useUser } from "../../../context/UserContext";
 
-export default function App() {
+export default function index() {
   const { userDetails } = useUser();
   return (
     <EditProfile

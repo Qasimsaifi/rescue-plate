@@ -14,6 +14,7 @@ import {
 } from "lucide-react-native";
 import { Colors } from "../constants/Colors";
 import { useUser } from "../context/UserContext";
+import { router } from "expo-router";
 
 const SettingScreen = () => {
   const colorScheme = useColorScheme();
@@ -70,8 +71,7 @@ const SettingScreen = () => {
   );
 
   return (
-    <View className="flex-1 p-6 ">
-      <Text className="text-3xl font-bold  mb-8 text-center">Settings</Text>
+    <View className="flex-1 p-6 justify-center ">
       <SettingItem
         icon={
           darkModeEnabled ? (
@@ -98,7 +98,7 @@ const SettingScreen = () => {
         <SettingItem
           icon={<UserCircle className="text-purple-500" size={24} />}
           text="Edit Profile"
-          onPress={() => {}}
+          onPress={() => router.push("/(home)/editprofile")}
         />
         <SettingItem
           icon={<LogOut className="text-red-500" size={24} />}

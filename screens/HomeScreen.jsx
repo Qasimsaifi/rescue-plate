@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   ScrollView,
   useColorScheme,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect } from "react";
 import { useUser } from "../context/UserContext";
@@ -13,7 +14,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FoodCard from "../components/ui/card";
 import { Colors } from "../constants/Colors";
 import useLocation from "../hooks/useLocation";
-import { MapPin, MessageCircle, Settings } from "lucide-react-native";
+import { Bell, MapPin, MessageCircle, Settings } from "lucide-react-native";
 import { getAllFoods } from "../lib/appwriteService";
 import { databases } from "@/lib/appwrite";
 const defUserImage = require("../assets/images/homecover.jpg");
@@ -64,12 +65,16 @@ export default function HomeScreen() {
                 </View>
               </View>
               <View className="flex-row items-center mt-">
-                <MessageCircle
-                  name="chatbubble-ellipses-outline"
-                  size={32}
-                  color={Colors[colorScheme].text}
-                  style={{ marginHorizontal: 8 }}
-                />
+                <TouchableOpacity
+                  onPress={() => router.push("/(home)/notifications")}
+                >
+                  <Bell
+                    name="chatbubble-ellipses-outline"
+                    size={32}
+                    color={Colors[colorScheme].text}
+                    style={{ marginHorizontal: 8 }}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
           </View>

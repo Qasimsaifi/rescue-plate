@@ -39,6 +39,15 @@ export default function HomeLayout() {
           headerShown: true,
         }}
       />
+      <Stack.Screen
+        name="notifications"
+        options={{
+          title: "Notifications",
+
+          headerTitleAlign: "center",
+          headerShown: true,
+        }}
+      />
       {/* <Stack.Screen name="register" /> */}
     </Stack>
   );

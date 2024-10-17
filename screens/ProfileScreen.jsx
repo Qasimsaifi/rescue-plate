@@ -22,10 +22,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { getFoodsByUserId } from "../lib/appwriteService";
 
-const defUserImage = require("../assets/images/def-user.png");
 export default function ProfileScreen() {
   const { userDetails, logout, updatePrefs, userPrefs, updateUser } = useUser();
-  const [profilePic, setProfilePic] = useState("");
+  const [profilePic, setProfilePic] = useState(
+    "https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?q=80&w=1587",
+  );
   const [donationsCount, setDonationsCount] = useState(0);
   const colorScheme = useColorScheme();
 

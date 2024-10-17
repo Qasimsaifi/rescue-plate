@@ -48,7 +48,7 @@ const RequestButton = ({ userId, foodId }) => {
   return (
     <TouchableOpacity
       onPress={handleRequest}
-      className="py-3 px-4 rounded-lg flex-1 mr-2"
+      className="py-3 px-4 rounded-lg flex-1 "
       style={{ backgroundColor: Colors[colorScheme].primary }}
     >
       <Text

@@ -102,13 +102,7 @@ const SingleFoodView = ({ id }) => {
     return { timeFormatted, dateFormatted };
   };
 
-  function handleMessage() {
-    console.log("Message button pressed");
-    console.log(food.pickupTime);
-  }
-
   async function handleFollow() {
-    // console.log("Follow button pressed");
     await toggleFollow(userDetails.$id, food.userId);
   }
   const {
@@ -121,14 +115,12 @@ const SingleFoodView = ({ id }) => {
   } = formatDateTime(food.expirationDate);
   return (
     <ScrollView className="p-3">
-      {/* Food Image */}
       <Image
         source={{ uri: food.imageUrl }}
         className="w-full h-[250px] rounded-lg mb-[18px]"
         resizeMode="cover"
       />
 
-      {/* Food Title and Price */}
       <View className="mb-2">
         <Text
           className="text-[22px] font-bold"
@@ -139,8 +131,7 @@ const SingleFoodView = ({ id }) => {
         <Text className="text-lg text-green-500">{food.price}</Text>
       </View>
 
-      {/* Additional Food Details */}
-      <View className="mb-4">
+      <View className="">
         <Text className="mb-1" style={{ color: Colors[colorScheme].text }}>
           <Text className="font-semibold">Quantity: </Text>
           {food.quantity}
@@ -154,33 +145,19 @@ const SingleFoodView = ({ id }) => {
           {pickupDateFormatted} at {pickupTimeFormatted}
         </Text>
         <Text style={{ color: Colors[colorScheme].text }}>
-          {food.contact && <Text className="font-semibold">Contact: </Text>}
-          {food.contact}
+          {food.contact && (
+            <Text className="font-semibold">Contact: {food.contact} </Text>
+          )}
         </Text>
       </View>
 
-      {/* Request and Message Buttons */}
       <Text className="py-2" style={{ color: Colors[colorScheme].text }}>
         {requestStatus && `Request Status: ${requestStatus.status}`}
       </Text>
-      <View className="flex-row justify-between mb-8">
+      <View className="flex-row justify-between mb-4">
         <RequestButton userId={userDetails.$id} foodId={food.$id} />
-
-        <TouchableOpacity
-          onPress={handleMessage}
-          className="py-3 px-4 rounded-lg flex-1 ml-2"
-          style={{ backgroundColor: Colors[colorScheme].primary }}
-        >
-          <Text
-            className="font-semibold text-center"
-            style={{ color: Colors[colorScheme].text }}
-          >
-            Message
-          </Text>
-        </TouchableOpacity>
       </View>
 
-      {/* Description and Distance */}
       <Text className="mb-4" style={{ color: Colors[colorScheme].text }}>
         {food.description}
       </Text>
@@ -189,7 +166,6 @@ const SingleFoodView = ({ id }) => {
         {food.distance}
       </Text>
 
-      {/* Map View */}
       <View className="mt-4 mb-0.5">
         <MapView
           initialRegion={{
