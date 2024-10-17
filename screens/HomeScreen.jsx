@@ -37,7 +37,7 @@ export default function HomeScreen() {
     fetchFoods();
   }, []);
   return (
-    <SafeAreaView className="flex-1">
+    <View className="flex-1">
       {userDetails ? (
         <View className="flex-1">
           <View className="relative">
@@ -79,12 +79,6 @@ export default function HomeScreen() {
             </View>
           </View>
           <ScrollView>
-            <Text
-              className="text-center text-2xl font-bold mt-4"
-              style={{ color: Colors[colorScheme].text }}
-            >
-              Available Food
-            </Text>
             <View className="flex flex-wrap flex-row justify-between my-4">
               {foods.map((food, index) => (
                 <View key={index} className="basis-1/2 p-1">
@@ -103,6 +97,6 @@ export default function HomeScreen() {
       ) : (
         <ActivityIndicator size="large" color="red" />
       )}
-    </SafeAreaView>
+    </View>
   );
 }

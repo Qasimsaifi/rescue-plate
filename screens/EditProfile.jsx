@@ -84,7 +84,6 @@ export default function EditProfile({ currentUser, onSubmit }) {
           await updateUser({ name: name });
         }
 
-        Alert.alert("Success", "Profile updated successfully");
         if (onSubmit) onSubmit();
       }
     } catch (error) {

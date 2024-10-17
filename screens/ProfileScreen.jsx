@@ -25,7 +25,7 @@ import { getFoodsByUserId } from "../lib/appwriteService";
 export default function ProfileScreen() {
   const { userDetails, logout, updatePrefs, userPrefs, updateUser } = useUser();
   const [profilePic, setProfilePic] = useState(
-    "https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?q=80&w=1587",
+    "https://cloud.appwrite.io/v1/storage/buckets/670374430009df86ecdd/files/67114295001680bcce00/view?project=66fcb502000fbd3bb26e&project=66fcb502000fbd3bb26e&mode=admin",
   );
   const [donationsCount, setDonationsCount] = useState(0);
   const colorScheme = useColorScheme();
@@ -43,7 +43,8 @@ export default function ProfileScreen() {
     };
 
     fetchDonations();
-  }, [updatePrefs]);
+  }, [userPrefs]);
+
   console.log(userDetails);
   const textColor = { color: Colors[colorScheme].text };
   const primaryColor = Colors[colorScheme].primary;
@@ -62,7 +63,7 @@ export default function ProfileScreen() {
                     uri: profilePic,
                   }
                 : {
-                    uri: "https://th.bing.com/th/id/OIP.GbeZQdeiXR0SA9h-4Ez6zgHaQD?rs=1&pid=ImgDetMain",
+                    uri: "https://cloud.appwrite.io/v1/storage/buckets/670374430009df86ecdd/files/67114295001680bcce00/view?project=66fcb502000fbd3bb26e&project=66fcb502000fbd3bb26e&mode=admin",
                   }
             }
             className="w-32 h-32 rounded-full "
