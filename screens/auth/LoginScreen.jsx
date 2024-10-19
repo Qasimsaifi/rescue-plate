@@ -10,7 +10,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { useUser } from "../../context/UserContext";
-import { Link } from "expo-router";
+import { Link, Redirect } from "expo-router";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Colors } from "@/constants/Colors";
 export default function LoginScreen() {
@@ -18,6 +18,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoaged, setIsLoaged] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const colorScheme = useColorScheme();
   const themeTextStyle =
@@ -25,7 +26,7 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     setIsLoading(true);
     try {
-      await user.login(email, password);
+      const userData = await user.login(email, password);
       setErrorMessage(null);
     } catch (error) {
       console.error("Login failed", error);
@@ -34,7 +35,9 @@ export default function LoginScreen() {
       setIsLoading(false);
     }
   };
-
+  if (user.userDetails) {
+    return <Redirect href="/home" />;
+  }
   return (
     <View style={styles.container}>
       <Text style={[styles.header_text, themeTextStyle]}>

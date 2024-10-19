@@ -21,7 +21,7 @@ export function UserProvider(props) {
     setUser(loggedIn);
     await fetchUserDetails();
     await fetchUserPrefs();
-    router.replace("(tabs)/");
+    // router.replace("/(home)/editprofile");
   }
 
   async function logout() {
@@ -37,7 +37,7 @@ export function UserProvider(props) {
     await account.create(ID.unique(), email, password, name);
     await login(email, password);
     toast("Account created");
-    router.replace("(tabs)/");
+    router.replace("/(home)/editprofile");
   }
 
   async function fetchUserDetails() {

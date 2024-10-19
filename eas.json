@@ -1,21 +1,26 @@
 {
+  "cli": {
+    "appVersionSource": "remote"
+  },
+
   "build": {
-    "preview": {
+    "development": {
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EAS_BUILD_DISABLE_MAVEN_CACHE": "1",
+        "EXPO_PUBLIC_DATABASE_ID": "67036e10001a99029e38",
+        "EXPO_PUBLIC_FOOD_COLLECTION_ID": "67036e2500111d34d89c",
+        "EXPO_PUBLIC_REQUESTS_COLLECTION_ID": "6705588700122358bf53",
+        "EXPO_PUBLIC_FOLLOWERS_COLLECTION_ID": "6704aae400014cc91977",
+        "EXPO_PUBLIC_APPWRITE_ENDPOINT": "https://cloud.appwrite.io/v1",
+        "EXPO_PUBLIC_APPWRITE_PROJECT_ID": "66fcb502000fbd3bb26e",
+        "EXPO_PUBLIC_APPWRITE_PLATFORM": "com.cariur.rescue-plate",
+        "EXPO_PUBLIC_STORAGE_BUCKET_ID": "670374430009df86ecdd"
       }
     },
-    "preview2": {
-      "android": {
-        "gradleCommand": ":app:assembleRelease"
-      }
-    },
-    "preview3": {
-      "developmentClient": true
-    },
-    "preview4": {
-      "distribution": "internal"
-    },
+
     "production": {}
   }
 }
